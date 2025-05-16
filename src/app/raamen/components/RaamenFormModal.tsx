@@ -10,6 +10,7 @@ import { IconChevronDown, IconX } from "@tabler/icons-react";
 import { red } from "@mui/material/colors";
 import Raamen from "../type/Raamen";
 import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 
 const schema = object({
   id: string(),
@@ -86,6 +87,8 @@ const RaamenFormModal = ({
     }
   }, [data, type, reset]);
 
+  const queryClient = useQueryClient();
+
   const onClose = () => {
     reset();
     handleClose();
@@ -120,6 +123,8 @@ const RaamenFormModal = ({
       }
       const ramen = await response.json();
       console.log("ramen", ramen);
+
+      queryClient.invalidateQueries({ queryKey: ["ramen"]});
     } else if(type === "edit") {
       const response = await fetch(`http://localhost:3001/api/ramen/update/${data.id}`, { 
         method: "PATCH",
@@ -141,8 +146,9 @@ const RaamenFormModal = ({
       }
       const ramen = await response.json();
       console.log("ramen", ramen);
+
+      queryClient.invalidateQueries({ queryKey: ["ramen"]});
     }
-    // Handle the response as needed
 
     reset();
     setLoading(false);

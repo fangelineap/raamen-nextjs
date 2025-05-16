@@ -538,6 +538,9 @@ video {
 .visible {
   visibility: visible;
 }
+.absolute {
+  position: absolute;
+}
 .relative {
   position: relative;
 }
@@ -587,8 +590,14 @@ video {
 .mt-2 {
   margin-top: 0.5rem;
 }
+.mt-4 {
+  margin-top: 1rem;
+}
 .mt-5 {
   margin-top: 1.25rem;
+}
+.mt-7 {
+  margin-top: 1.75rem;
 }
 .block {
   display: block;
@@ -622,6 +631,9 @@ video {
 .h-full {
   height: 100%;
 }
+.h-screen {
+  height: 100vh;
+}
 .min-h-screen {
   min-height: 100vh;
 }
@@ -631,8 +643,14 @@ video {
 .w-\[90\%\] {
   width: 90%;
 }
+.w-\[full\] {
+  width: full;
+}
 .w-full {
   width: 100%;
+}
+.max-w-\[90\%\] {
+  max-width: 90%;
 }
 .flex-1 {
   flex: 1 1 0%;
@@ -688,9 +706,6 @@ video {
 .justify-between {
   justify-content: space-between;
 }
-.justify-items-center {
-  justify-items: center;
-}
 .gap-2 {
   gap: 0.5rem;
 }
@@ -708,6 +723,9 @@ video {
 }
 .gap-x-6 {
   column-gap: 1.5rem;
+}
+.gap-y-3 {
+  row-gap: 0.75rem;
 }
 .gap-y-5 {
   row-gap: 1.25rem;
@@ -771,6 +789,9 @@ video {
   --tw-bg-opacity: 1;
   background-color: rgb(80 7 36 / var(--tw-bg-opacity, 1));
 }
+.bg-raamen-light {
+  background-color: oklch(96.9% 0.016 293.756);
+}
 .bg-slate-50 {
   --tw-bg-opacity: 1;
   background-color: rgb(248 250 252 / var(--tw-bg-opacity, 1));
@@ -790,6 +811,9 @@ video {
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
+}
+.p-7 {
+  padding: 1.75rem;
 }
 .px-2 {
   padding-left: 0.5rem;
@@ -919,9 +943,16 @@ video {
   --tw-text-opacity: 1;
   color: rgb(17 24 39 / var(--tw-text-opacity, 1));
 }
+.text-raamen-secondary {
+  color: oklch(70.2% 0.183 293.541);
+}
 .text-red-500 {
   --tw-text-opacity: 1;
   color: rgb(239 68 68 / var(--tw-text-opacity, 1));
+}
+.text-slate-600 {
+  --tw-text-opacity: 1;
+  color: rgb(71 85 105 / var(--tw-text-opacity, 1));
 }
 .text-violet-300 {
   --tw-text-opacity: 1;
@@ -1051,8 +1082,16 @@ body {
     height: 1rem;
   }
 
+  .sm\:min-w-\[80\%\] {
+    min-width: 80%;
+  }
+
   .sm\:flex-1 {
     flex: 1 1 0%;
+  }
+
+  .sm\:grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .sm\:grid-cols-6 {
@@ -1075,6 +1114,10 @@ body {
     justify-content: space-between;
   }
 
+  .sm\:gap-x-8 {
+    column-gap: 2rem;
+  }
+
   .sm\:rounded-lg {
     border-radius: 0.5rem;
   }
@@ -1087,6 +1130,13 @@ body {
   .sm\:text-sm\/6 {
     font-size: 0.875rem;
     line-height: 1.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+
+  .md\:min-w-\[40\%\] {
+    min-width: 40%;
   }
 }
 

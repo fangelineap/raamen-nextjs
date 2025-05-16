@@ -1,12 +1,13 @@
 "use client";
 
-import { Box } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 import { IconChevronLeft, IconChevronRight, IconDotsVertical, IconEdit, IconTrashFilled } from "@tabler/icons-react";
 import React, { useEffect, useState } from "react";
 import ActionButton from "./ActionButton";
 import ConfirmationModal from "./ConfirmationModal";
 import RaamenFormModal from "./RaamenFormModal";
 import Raamen from "../type/Raamen";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface DataTableProps {
   handleOpenAddRamenModal: () => void;
@@ -23,6 +24,7 @@ interface DataTableProps {
       rowsPerPage: number;
     }>
   >;
+  isLoading: boolean;
 }
 
 const DataTable = ({
@@ -32,6 +34,7 @@ const DataTable = ({
   data,
   customPagination,
   setCustomPagination,
+  isLoading,
 }: DataTableProps) => {
   const [confirmationProps, setConfirmationProps] = useState({
     title: "",
@@ -56,6 +59,7 @@ const DataTable = ({
     },
   });
   const [type, setType] = useState<"add" | "edit">("add");
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     console.log("Data changed:", data);
@@ -115,6 +119,8 @@ const DataTable = ({
             if (!response.ok) {
               throw new Error(`HTTP error! Status: ${response.status}`);
             }
+
+            queryClient.invalidateQueries({ queryKey: ["ramen"] });
           } catch {
             throw new Error("Error deleting ramen");
           }
@@ -144,60 +150,66 @@ const DataTable = ({
   return (
     // Table Content
     <Box className="relative overflow-x-auto w-full shadow-md sm:rounded-lg border border-slate-200">
-      <table className="w-full text-sm text-left rtl:text-right text-gray-500">
-        <thead className="text-xs text-gray-700 uppercase bg-violet-50">
-          <tr>
-            <th scope="col" className="px-6 py-3">
-              ID
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Name
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Broth
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Description
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Price
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Actions
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.length > 0 ? (
-            data
-              .slice(
-                (customPagination.page - 1) * customPagination.rowsPerPage,
-                customPagination.page * customPagination.rowsPerPage
-              )
-              .map((item) => (
-                <tr key={item.id} className="bg-white border-b border-gray-200 hover:bg-gray-50">
-                  <td className="px-6 py-4">{item.id}</td>
-                  <td className="px-6 py-4">{item.name}</td>
-                  <td className="px-6 py-4">{item.broth}</td>
-                  <td className="px-6 py-4">{item.description}</td>
-                  <td className="px-6 py-4">{item.price}</td>
-                  <td className="px-6 py-4">
-                    <ActionButton
-                      icon={<IconDotsVertical size={16} className="text-gray-500 dark:text-gray-400" />}
-                      options={getOptions(item.id.toString())}
-                    />
-                  </td>
-                </tr>
-              ))
-          ) : (
-            <tr key="no data">
-              <td colSpan={12} className="text-center py-4 col-span-full">
-                No ramen found
-              </td>
+      {isLoading ? (
+        <Box className="flex justify-center items-center py-4">
+          <CircularProgress />
+        </Box>
+      ) : (
+        <table className="w-full text-sm text-left rtl:text-right text-gray-500">
+          <thead className="text-xs text-gray-700 uppercase bg-violet-50">
+            <tr>
+              <th scope="col" className="px-6 py-3">
+                ID
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Name
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Broth
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Description
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Price
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Actions
+              </th>
             </tr>
-          )}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {data.length > 0 ? (
+              data
+                .slice(
+                  (customPagination.page - 1) * customPagination.rowsPerPage,
+                  customPagination.page * customPagination.rowsPerPage
+                )
+                .map((item) => (
+                  <tr key={item.id} className="bg-white border-b border-gray-200 hover:bg-gray-50">
+                    <td className="px-6 py-4">{item.id}</td>
+                    <td className="px-6 py-4">{item.name}</td>
+                    <td className="px-6 py-4">{item.broth}</td>
+                    <td className="px-6 py-4">{item.description}</td>
+                    <td className="px-6 py-4">{item.price}</td>
+                    <td className="px-6 py-4">
+                      <ActionButton
+                        icon={<IconDotsVertical size={16} className="text-gray-500 dark:text-gray-400" />}
+                        options={getOptions(item.id.toString())}
+                      />
+                    </td>
+                  </tr>
+                ))
+            ) : (
+              <tr key="no data">
+                <td colSpan={12} className="text-center py-4 col-span-full">
+                  No ramen found
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      )}
 
       {/* Pagination */}
       <Box className="flex items-center justify-between border-t text-white uppercase bg-violet-50 px-4 py-3 sm:px-6">
@@ -218,9 +230,9 @@ const DataTable = ({
         <Box className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
           <Box>
             <p className="text-sm text-gray-400">
-              Page <span className="font-medium">{customPagination.page}</span> Showing{" "}
+              Page <span className="font-medium">{data.length == 0 ? 0 : customPagination.page}</span> Showing{" "}
               <span className="font-medium">
-                {customPagination.page == 1 ? 1 : (customPagination.page - 1) * customPagination.rowsPerPage + 1}
+                {data.length == 0 ? 0 : customPagination.page == 1 ? 1 : (customPagination.page - 1) * customPagination.rowsPerPage + 1}
               </span>{" "}
               to{" "}
               <span className="font-medium">

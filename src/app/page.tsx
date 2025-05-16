@@ -2,11 +2,10 @@ import Navbar from "./raamen/components/Navbar";
 
 export default function Home({ children }: { children: React.ReactNode }) {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen font-[family-name:var(--font-geist-sans)]">
+    <div className="grid grid-rows-[20px_1fr_20px] min-h-screen font-[family-name:var(--font-geist-sans)]">
       <Navbar />
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <h1>Hi</h1>
+      <main className="flex flex-col gap-8 row-start-2 sm:items-start">
+        <div className="flex gap-4 flex-col sm:flex-row">
           {children}
         </div>
       </main>

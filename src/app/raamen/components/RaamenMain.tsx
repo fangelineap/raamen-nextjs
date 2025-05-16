@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import { IconSearch } from "@tabler/icons-react";
 import DataTable from "./DataTable";
 import Raamen from "../type/Raamen";
+import { useQuery } from "@tanstack/react-query";
 
 const RaamenMain = () => {
   const [ramenData, setRamenData] = useState<Raamen[]>([]);
@@ -12,72 +13,38 @@ const RaamenMain = () => {
   const [keyword, setKeyword] = useState<string>("");
   const [customPagination, setCustomPagination] = useState({
     page: 1,
-    rowsPerPage: 2,
+    rowsPerPage: 5,
   });
   const [filteredData, setFilteredData] = useState<Raamen[]>(ramenData);
 
-  useEffect(() => {
-    const fetchRamenData = async () => {
+  const { isLoading } = useQuery({
+    queryKey: ["ramen"],
+    queryFn: async () => {
       try {
-        console.log("Fetching ramen data...");
-        try {
-          // Make a POST request to an external login API (http://localhost:3001/api/login)
-          const response = await fetch("http://localhost:3001/api/login", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            credentials: "include",
-            body: JSON.stringify({
-              email: "silvermist@gmail.com",
-              password: "silvermist",
-            }),
-          });
+        const ramenData = await fetch("http://localhost:3001/api/ramen/all", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          credentials: "include",
+        });
 
-          if (!response.ok) {
-            throw new Error(`External login API returned an error: ${response.status}`);
-          }
+        console.log("Response received:", ramenData.status, ramenData.statusText);
 
-          // Parse the JSON response from the external API
-          const data = await response.json();
-
-          console.log("Login response data:", data);
-
-          const ramenData = await fetch("http://localhost:3001/api/ramen/all", {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Accept: "application/json",
-            },
-            credentials: "include",
-          });
-
-          console.log("Response received:", ramenData.status, ramenData.statusText);
-
-          if (!ramenData.ok) {
-            throw new Error(`HTTP error! Status: ${ramenData.status}`);
-          }
-
-          const ramens = await ramenData.json();
-
-          setRamenData(ramens.ramens);
-        } catch (error) {
-          console.error("Error during login:", error);
+        if (!ramenData.ok) {
+          throw new Error(`HTTP error! Status: ${ramenData.status}`);
         }
+
+        const ramens = await ramenData.json();
+        console.log("Ramen data:", ramens.ramens);
+
+        setRamenData(ramens.ramens);
       } catch (error) {
         console.error("Error fetching ramen data:", error);
       }
-    };
-    // const interval = setInterval(() => {
-    //   fetchRamenData();
-    // }, 5000);
-
-    fetchRamenData();
-
-    // return () => {
-    //   clearInterval(interval);
-    // };
-  }, []);
+    },
+  });
 
   useEffect(() => {
     if (keyword === "") {
@@ -97,7 +64,7 @@ const RaamenMain = () => {
 
   return (
     <>
-      <Box className="flex justify-between items-center">
+      <Box className="flex justify-between">
         <Typography fontWeight={600} fontSize={20} className="text-violet-950">
           Raamen List
         </Typography>
@@ -121,14 +88,15 @@ const RaamenMain = () => {
         </Box>
       </Box>
       <Box className="my-3">
-        <DataTable
-          handleOpenAddRamenModal={handleOpenAddRamenModal}
-          handleCloseAddRamenModal={handleCloseAddRamenModal}
-          open={open}
-          data={filteredData}
-          customPagination={customPagination}
-          setCustomPagination={setCustomPagination}
-        />
+          <DataTable
+            handleOpenAddRamenModal={handleOpenAddRamenModal}
+            handleCloseAddRamenModal={handleCloseAddRamenModal}
+            open={open}
+            data={filteredData}
+            customPagination={customPagination}
+            setCustomPagination={setCustomPagination}
+            isLoading={isLoading}
+          />
       </Box>
     </>
   );

@@ -4,14 +4,34 @@ import { Box } from "@mui/material";
 import { IconLogout, IconSoupFilled, IconUserCircle } from "@tabler/icons-react";
 import React from "react";
 import ActionButton from "./ActionButton";
+import { useRouter } from "next/navigation";
 
 const Navbar = () => {
+  const router = useRouter();
+
   const options = [
     {
       name: "Logout",
       icon: <IconLogout size={16} className="text-red-500 dark:text-red-400" />,
       handleClick: () => {
-        // Handle logout action here
+        const logout = async () => {
+          const response = await fetch("http://localhost:3001/api/logout", {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+          });
+
+          if (!response.ok) {
+            alert("Error: " + response.statusText);
+            return;
+          }
+
+          router.push("/auth/login");
+        }
+
+        logout();
       },
     },
   ];
