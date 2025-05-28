@@ -65,8 +65,8 @@ const LoginForm = () => {
 
   return (
     <Paper className="p-7 w-[full]" elevation={0}>
-      <form onSubmit={handleSubmit(handleOnSubmit)}>
-        <h1 className="text-violet-950 font-bold text-2xl">Register</h1>
+      <form data-testid="login-form" onSubmit={handleSubmit(handleOnSubmit)}>
+        <h1 className="text-violet-950 font-bold text-2xl">Login</h1>
         <Box className="mt-4 grid grid-cols-1 gap-y-3 sm:grid-cols-3 sm:gap-x-8">
           {/* Email */}
           <div className="sm:col-span-3">
